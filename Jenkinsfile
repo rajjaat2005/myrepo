@@ -1,3 +1,4 @@
+echo "Pipeline is running successfully!"
 pipeline {
     agent any
 
