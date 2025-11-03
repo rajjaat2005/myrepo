@@ -4,25 +4,32 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'git@github.com:rajjaat2005/myrepo.git'
+                echo 'Cloning repository...'
+                git branch: 'master', url: 'https://github.com/rajjaat2005/myrepo.git'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building the project...'
+                echo 'Building project...'
+                sh 'echo "Build step completed successfully"'
             }
         }
 
         stage('Deploy') {
             steps {
+                echo 'Deploying to web server...'
                 sh '''
-                mkdir -p /var/www/myweb
-                cp -r * /var/www/myweb/
-                echo "Website deployed successfully!"
+                    sudo rm -rf /var/www/html/*
+                    sudo cp -r * /var/www/html/
+                    sudo systemctl restart nginx
                 '''
             }
         }
     }
-}
 
+    post {
+        success {
+            echo 'Deployment successful! ✅'
+        }
+        failure {
