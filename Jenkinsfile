@@ -1,36 +1,29 @@
-echo "Pipeline is running successfully!"
 pipeline {
     agent any
 
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                echo 'Cloning repository...'
                 git branch: 'master', url: 'https://github.com/rajjaat2005/myrepo.git'
             }
         }
 
-        stage('Build') {
+        stage('Deploy Website') {
             steps {
-                echo 'Building project...'
-                sh 'echo "Build step completed successfully"'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying to web server...'
-                sh '''
-                    sudo rm -rf /var/www/html/*
-                    sudo cp -r * /var/www/html/
-                    sudo systemctl restart nginx
-                '''
+                echo 'Deploying website to /var/www/html ...'
+                sh 'sudo cp -r * /var/www/html/'
+                sh 'sudo systemctl restart nginx || true'
             }
         }
     }
 
     post {
         success {
-            echo 'Deployment successful! ✅'
+            echo '🎉 Deployment successful!'
         }
         failure {
+            echo '❌ Deployment failed!'
+        }
+    }
+}
+
